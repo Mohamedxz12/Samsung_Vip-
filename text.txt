@@ -1,0 +1,3275 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NIO VIP | منصة الاستثمار الذكي المتكاملة</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.css">
+    <style>
+        :root {
+            --primary: #121212;
+            --secondary: #1E1E1E;
+            --accent: #FFD700;
+            --accent-dark: #FFA500;
+            --dark: #0A0A0A;
+            --darker: #050505;
+            --light: #F5F5F5;
+            --success: #28A745;
+            --success-dark: #1E7E34;
+            --warning: #FFC107;
+            --warning-dark: #FFA000;
+            --danger: #DC3545;
+            --danger-dark: #BD2130;
+            --info: #17A2B8;
+            --info-dark: #117A8B;
+            --text: #E0E0E0;
+            --text-muted: rgba(255,255,255,0.6);
+            --border: rgba(255,255,255,0.1);
+            --border-light: rgba(255,255,255,0.2);
+            --card-bg: rgba(30, 30, 30, 0.9);
+            --input-bg: rgba(255,255,255,0.05);
+            --modal-bg: rgba(0,0,0,0.9);
+            --overlay-bg: rgba(0,0,0,0.7);
+            --glass-bg: rgba(255,255,255,0.05);
+            --glass-border: rgba(255,255,255,0.1);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            --login-bg: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Tajawal', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-text-size-adjust: none;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+        }
+        
+        body {
+            background-color: var(--dark);
+            color: var(--text);
+            min-height: 100vh;
+            background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            overflow-x: hidden;
+            touch-action: manipulation;
+        }
+        
+        body.login-page {
+            background: var(--login-bg);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+        
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: -1;
+        }
+        
+        body.login-page::before {
+            background: rgba(0, 0, 0, 0.7);
+        }
+        
+        /* التصميم العام */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            padding-bottom: 80px;
+        }
+        
+        /* شريط التنقل العلوي */
+        .navbar {
+            background: var(--primary);
+            color: white;
+            padding: 15px 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(10px);
+        }
+        
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        
+        .logo i {
+            color: var(--accent);
+        }
+        
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .notification-bell {
+            position: relative;
+            cursor: pointer;
+            color: var(--text);
+            transition: all 0.3s;
+        }
+        
+        .notification-bell:hover {
+            color: var(--accent);
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            background: var(--danger);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: bold;
+        }
+        
+        .admin-badge {
+            background: var(--accent);
+            color: var(--dark);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: bold;
+        }
+        
+        /* تصميم البطاقات */
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid var(--border);
+            box-shadow: var(--glass-shadow);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,215,0,0.05) 0%, rgba(255,215,0,0.01) 100%);
+            z-index: -1;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+            border-color: rgba(255,215,0,0.3);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .card-header h3 {
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card-header .card-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        /* الأزرار */
+        .btn {
+            background: linear-gradient(to right, var(--accent), var(--accent-dark));
+            color: var(--dark);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s;
+            text-decoration: none;
+            font-size: 15px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, var(--accent-dark), var(--accent));
+            opacity: 0;
+            z-index: -1;
+            transition: opacity 0.3s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+        }
+        
+        .btn:hover::before {
+            opacity: 1;
+        }
+        
+        .btn:active {
+            transform: scale(0.98);
+        }
+        
+        .btn-sm {
+            padding: 8px 15px;
+            font-size: 14px;
+        }
+        
+        .btn-block {
+            width: 100%;
+            display: block;
+        }
+        
+        .btn-success {
+            background: linear-gradient(to right, var(--success), var(--success-dark));
+            color: white;
+        }
+        
+        .btn-success::before {
+            background: linear-gradient(to right, var(--success-dark), var(--success));
+        }
+        
+        .btn-danger {
+            background: linear-gradient(to right, var(--danger), var(--danger-dark));
+            color: white;
+        }
+        
+        .btn-danger::before {
+            background: linear-gradient(to right, var(--danger-dark), var(--danger));
+        }
+        
+        .btn-info {
+            background: linear-gradient(to right, var(--info), var(--info-dark));
+            color: white;
+        }
+        
+        .btn-info::before {
+            background: linear-gradient(to right, var(--info-dark), var(--info));
+        }
+        
+        .btn-warning {
+            background: linear-gradient(to right, var(--warning), var(--warning-dark));
+            color: var(--dark);
+        }
+        
+        .btn-warning::before {
+            background: linear-gradient(to right, var(--warning-dark), var(--warning));
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+        }
+        
+        .btn-outline:hover {
+            background: linear-gradient(to right, var(--accent), var(--accent-dark));
+            color: var(--dark);
+        }
+        
+        .btn-link {
+            background: transparent;
+            color: var(--accent);
+            box-shadow: none;
+            padding: 0;
+        }
+        
+        .btn-link:hover {
+            transform: none;
+            text-decoration: underline;
+        }
+        
+        /* النماذج */
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: rgba(255,255,255,0.8);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 20px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 15px;
+            background: var(--input-bg);
+            color: white;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+        }
+        
+        .input-group {
+            display: flex;
+        }
+        
+        .input-group .form-control {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+        
+        .input-group-prepend {
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            background: rgba(0,0,0,0.2);
+            border: 1px solid var(--border);
+            border-right: none;
+            border-radius: 8px 0 0 8px;
+            color: var(--text-muted);
+        }
+        
+        .password-container {
+            position: relative;
+        }
+        
+        .toggle-password {
+            position: absolute;
+            top: 50%;
+            left: 15px;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: rgba(255,255,255,0.5);
+            transition: all 0.3s;
+        }
+        
+        .toggle-password:hover {
+            color: var(--accent);
+        }
+        
+        .form-text {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 5px;
+            display: block;
+        }
+        
+        /* المنتجات */
+        .product {
+            border: 1px solid var(--border);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            background: rgba(0,0,0,0.2);
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .product:hover {
+            border-color: var(--accent);
+            background: rgba(0,0,0,0.3);
+        }
+        
+        .product-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: var(--accent);
+            color: var(--dark);
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            z-index: 2;
+        }
+        
+        .product-title {
+            color: var(--accent);
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .product-detail {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+            padding: 8px 0;
+            border-bottom: 1px dashed var(--border);
+        }
+        
+        .product-detail .detail-value {
+            font-weight: bold;
+            color: var(--accent);
+        }
+        
+        .product-image {
+            width: 100%;
+            height: 180px;
+            border-radius: 8px;
+            object-fit: contain;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: transform 0.3s;
+            background: var(--darker);
+            padding: 10px;
+        }
+        
+        .product:hover .product-image {
+            transform: scale(1.03);
+        }
+        
+        /* عجلة الحظ */
+        .wheel-container {
+            text-align: center;
+            padding: 30px 0;
+        }
+        
+        .wheel {
+            width: 250px;
+            height: 250px;
+            margin: 0 auto 20px;
+            position: relative;
+            border-radius: 50%;
+            overflow: hidden;
+            box-shadow: 0 0 0 8px var(--accent), 0 0 30px rgba(0,0,0,0.5);
+        }
+        
+        .wheel-spinner {
+            width: 100%;
+            height: 100%;
+            background: conic-gradient(
+                #FF5252 0% 20%,
+                #FFD740 20% 40%,
+                #4CAF50 40% 60%,
+                #2196F3 60% 80%,
+                #9C27B0 80% 100%
+            );
+            transition: transform 3s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+            transform: rotate(0deg);
+            position: relative;
+        }
+        
+        .wheel-label {
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            top: 0;
+            left: 50%;
+            transform-origin: bottom left;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 30px;
+            box-sizing: border-box;
+            font-weight: bold;
+            color: white;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+        }
+        
+        .wheel-pointer {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--accent);
+            font-size: 40px;
+            z-index: 10;
+            filter: drop-shadow(0 0 5px rgba(0,0,0,0.5));
+        }
+        
+        .wheel-history {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .wheel-history-item {
+            background: var(--card-bg);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--accent);
+            border: 1px solid var(--border);
+        }
+        
+        /* الجداول */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 14px;
+        }
+        
+        .data-table th, .data-table td {
+            padding: 12px 15px;
+            text-align: right;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .data-table th {
+            background: rgba(0,0,0,0.3);
+            color: var(--accent);
+            font-weight: 500;
+        }
+        
+        .data-table tr:hover {
+            background: rgba(255,255,255,0.05);
+        }
+        
+        .data-table .badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        /* شريط تنقل سفلي */
+        .bottom-nav {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            background: var(--primary);
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            padding: 10px 0;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+        
+        .nav-item {
+            color: var(--text);
+            font-size: 12px;
+            padding: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .nav-item.active {
+            color: var(--accent);
+        }
+        
+        .nav-item i {
+            font-size: 20px;
+            display: block;
+            margin-bottom: 5px;
+            transition: all 0.3s;
+        }
+        
+        .nav-item.active i {
+            transform: translateY(-3px);
+        }
+        
+        .nav-item .nav-badge {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--danger);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* إشعارات */
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 25px;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 2000;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.3);
+            animation: slideIn 0.4s, fadeOut 0.6s 3s forwards;
+            max-width: 90%;
+        }
+        
+        .notification-success {
+            background: var(--success);
+        }
+        
+        .notification-error {
+            background: var(--danger);
+        }
+        
+        .notification-warning {
+            background: var(--warning);
+            color: var(--dark);
+        }
+        
+        .notification-info {
+            background: var(--info);
+        }
+        
+        @keyframes slideIn {
+            from { top: -100px; opacity: 0; }
+            to { top: 20px; opacity: 1; }
+        }
+        
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; visibility: hidden; }
+        }
+        
+        /* الصفحات المخفية */
+        .hidden {
+            display: none !important;
+        }
+        
+        /* المودال */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--overlay-bg);
+            z-index: 3000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+        
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            background: var(--modal-bg);
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            padding: 25px;
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 50px rgba(0,0,0,0.5);
+            transform: translateY(20px);
+            transition: all 0.3s;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal.active .modal-content {
+            transform: translateY(0);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .modal-header h3 {
+            font-size: 1.3rem;
+            color: var(--accent);
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .modal-close:hover {
+            color: var(--accent);
+        }
+        
+        .modal-footer {
+            margin-top: 20px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border);
+        }
+        
+        /* التبويبات */
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .tab.active {
+            border-bottom: 2px solid var(--accent);
+            color: var(--accent);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* البطاقات الإحصائية */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+        
+        .stat-card .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent);
+            margin: 5px 0;
+        }
+        
+        .stat-card .stat-label {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        
+        /* الرسوم البيانية */
+        .chart-container {
+            position: relative;
+            height: 250px;
+            margin-bottom: 20px;
+        }
+        
+        /* قائمة الإشعارات */
+        .notifications-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .notification-item {
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .notification-item:hover {
+            background: rgba(255,255,255,0.05);
+        }
+        
+        .notification-item.unread {
+            background: rgba(255,215,0,0.05);
+            border-right: 3px solid var(--accent);
+        }
+        
+        .notification-item .notification-time {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 5px;
+        }
+        
+        /* الشريط التقدمي */
+        .progress {
+            height: 10px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 5px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(to right, var(--accent), var(--accent-dark));
+            border-radius: 5px;
+            transition: width 0.5s;
+        }
+        
+        /* تصميم متجاوب */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+                padding-bottom: 70px;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+            
+            .product-image {
+                height: 150px;
+            }
+            
+            .wheel {
+                width: 200px;
+                height: 200px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .navbar .container {
+                padding: 0 15px;
+            }
+            
+            .logo {
+                font-size: 1.1rem;
+            }
+            
+            .card-header h3 {
+                font-size: 1rem;
+            }
+            
+            .nav-item span {
+                display: none;
+            }
+            
+            .nav-item i {
+                font-size: 22px;
+                margin-bottom: 0;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* تأثيرات خاصة */
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255,215,0,0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(255,215,0,0); }
+            100% { box-shadow: 0 0 0 0 rgba(255,215,0,0); }
+        }
+        
+        .shake {
+            animation: shake 0.5s;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        
+        /* تأثيرات الدخول */
+        .fade-in {
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .slide-up {
+            animation: slideUp 0.5s;
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        /* تصميم صفحة تسجيل الدخول */
+        .login-container {
+            max-width: 500px;
+            margin: 50px auto;
+            animation: slideUp 0.5s;
+        }
+        
+        .login-logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .login-logo img {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+        }
+        
+        .login-logo h1 {
+            color: var(--accent);
+            margin-top: 15px;
+            font-size: 1.8rem;
+        }
+        
+        .login-features {
+            margin-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 20px;
+        }
+        
+        .login-features h3 {
+            color: var(--accent);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .feature-item {
+            background: rgba(255,255,255,0.05);
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .feature-item i {
+            color: var(--accent);
+            font-size: 20px;
+        }
+        
+        /* شريط التمرير */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--dark);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-dark);
+        }
+    </style>
+</head>
+<body class="login-page">
+    <!-- شريط التنقل العلوي -->
+    <div class="navbar hidden" id="mainNavbar">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-coins"></i>
+                <span>NIO VIP</span>
+            </div>
+            <div class="user-actions">
+                <div id="adminBadge" class="admin-badge hidden">
+                    <i class="fas fa-crown"></i>
+                    <span>المدير</span>
+                </div>
+                <div class="notification-bell" onclick="showNotifications()">
+                    <i class="fas fa-bell"></i>
+                    <div id="notificationBadge" class="notification-badge hidden">0</div>
+                </div>
+                <button onclick="logout()" class="btn btn-sm btn-danger">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span class="hide-on-mobile">تسجيل خروج</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" id="loginContainer">
+        <!-- تسجيل الدخول -->
+        <div class="login-container" id="loginForm">
+            <div class="login-logo">
+                <img src="https://cdn-icons-png.flaticon.com/512/4775/4775472.png" alt="NIO VIP Logo">
+                <h1>NIO VIP</h1>
+                <p>منصة الاستثمار الذكي المتكاملة</p>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-sign-in-alt"></i> تسجيل الدخول</h3>
+                </div>
+                <div class="form-group">
+                    <label for="loginPhone">رقم الهاتف</label>
+                    <div class="input-group">
+                        <span class="input-group-prepend">+20</span>
+                        <input type="text" id="loginPhone" class="form-control" placeholder="أدخل رقم الهاتف" maxlength="10">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">كلمة المرور</label>
+                    <div class="password-container">
+                        <input type="password" id="loginPassword" class="form-control" placeholder="أدخل كلمة المرور">
+                        <i class="fas fa-eye toggle-password" onclick="togglePassword('loginPassword', this)"></i>
+                    </div>
+                    <a href="#" onclick="showForgotPassword()" class="form-text">نسيت كلمة المرور؟</a>
+                </div>
+                <button onclick="login()" class="btn btn-block pulse">
+                    <i class="fas fa-sign-in-alt"></i>
+                    دخول
+                </button>
+                <div style="text-align: center; margin-top: 20px;">
+                    <p>ليس لديك حساب؟ <a href="#" onclick="showRegister()" style="color: var(--accent); font-weight: bold;">إنشاء حساب جديد</a></p>
+                </div>
+            </div>
+
+            <div class="login-features">
+                <h3><i class="fas fa-star"></i> مميزات المنصة</h3>
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <i class="fas fa-gift"></i>
+                        <span>مكافآت يومية</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-users"></i>
+                        <span>نظام إحالة متعدد المستويات</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-mobile-alt"></i>
+                        <span>منتجات استثمارية متنوعة</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-hand-holding-usd"></i>
+                        <span>سحب فوري</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>نظام أمان متكامل</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-headset"></i>
+                        <span>دعم فني 24/7</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-chart-line"></i>
+                        <span>تتبع الأرباح في الوقت الحقيقي</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-calculator"></i>
+                        <span>حاسبة استثمار متطورة</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-trophy"></i>
+                        <span>مسابقات وجوائز</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-medal"></i>
+                        <span>نظام نقاط الولاء</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-wallet"></i>
+                        <span>محفظة إلكترونية متكاملة</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-exchange-alt"></i>
+                        <span>تحويل أموال فوري</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-bell"></i>
+                        <span>تنبيهات مخصصة</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-qrcode"></i>
+                        <span>دفع بالكيو آر كود</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-history"></i>
+                        <span>أرشيف كامل للمعاملات</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- إنشاء حساب -->
+        <div id="registerForm" class="card hidden slide-up">
+            <div class="card-header">
+                <h3><i class="fas fa-user-plus"></i> إنشاء حساب جديد</h3>
+            </div>
+            <div class="form-group">
+                <label for="regName">الاسم الكامل</label>
+                <input type="text" id="regName" class="form-control" placeholder="أدخل الاسم الكامل">
+            </div>
+            <div class="form-group">
+                <label for="regPhone">رقم الهاتف</label>
+                <div class="input-group">
+                    <span class="input-group-prepend">+20</span>
+                    <input type="text" id="regPhone" class="form-control" placeholder="أدخل رقم الهاتف" maxlength="10">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="regPassword">كلمة المرور</label>
+                <div class="password-container">
+                    <input type="password" id="regPassword" class="form-control" placeholder="أدخل كلمة المرور">
+                    <i class="fas fa-eye toggle-password" onclick="togglePassword('regPassword', this)"></i>
+                </div>
+                <span class="form-text">يجب أن تكون كلمة المرور 6 أحرف على الأقل</span>
+            </div>
+            <div class="form-group">
+                <label for="regConfirmPassword">تأكيد كلمة المرور</label>
+                <div class="password-container">
+                    <input type="password" id="regConfirmPassword" class="form-control" placeholder="أكد كلمة المرور">
+                    <i class="fas fa-eye toggle-password" onclick="togglePassword('regConfirmPassword', this)"></i>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="referralCode">كود الدعوة (اختياري)</label>
+                <input type="text" id="referralCode" class="form-control" placeholder="أدخل كود الدعوة إن وجد">
+            </div>
+            <button onclick="register()" class="btn btn-block btn-success pulse">
+                <i class="fas fa-user-plus"></i>
+                تسجيل
+            </button>
+            <div style="margin-top: 30px; border-top: 1px solid var(--border); padding-top: 20px;">
+                <h4 style="color: var(--accent); margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-gift"></i> مكافآت التسجيل
+                </h4>
+                <ul style="list-style-type: none; padding-right: 15px;">
+                    <li style="margin-bottom: 10px; display: flex; align-items: center; gap: 10px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 8px;">
+                        <i class="fas fa-check-circle" style="color: var(--success);"></i>
+                        <span>مكافأة تسجيل 100 جنيه فوراً</span>
+                    </li>
+                    <li style="margin-bottom: 10px; display: flex; align-items: center; gap: 10px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 8px;">
+                        <i class="fas fa-check-circle" style="color: var(--success);"></i>
+                        <span>مكافأة يومية 5 جنيه عند تسجيل الدخول</span>
+                    </li>
+                    <li style="margin-bottom: 10px; display: flex; align-items: center; gap: 10px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 8px;">
+                        <i class="fas fa-check-circle" style="color: var(--success);"></i>
+                        <span>عمولة 35% على استثمارات فريقك</span>
+                    </li>
+                    <li style="display: flex; align-items: center; gap: 10px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 8px;">
+                        <i class="fas fa-check-circle" style="color: var(--success);"></i>
+                        <span>سحب فوري بدون قيود</span>
+                    </li>
+                </ul>
+            </div>
+            <div style="text-align: center; margin-top: 20px;">
+                <p>لديك حساب بالفعل؟ <a href="#" onclick="showLogin()" style="color: var(--accent); font-weight: bold;">تسجيل الدخول</a></p>
+            </div>
+        </div>
+
+        <!-- نسيان كلمة المرور -->
+        <div id="forgotPasswordForm" class="card hidden slide-up">
+            <div class="card-header">
+                <h3><i class="fas fa-key"></i> استعادة كلمة المرور</h3>
+            </div>
+            <div class="form-group">
+                <label for="forgotPhone">رقم الهاتف</label>
+                <div class="input-group">
+                    <span class="input-group-prepend">+20</span>
+                    <input type="text" id="forgotPhone" class="form-control" placeholder="أدخل رقم الهاتف المسجل" maxlength="10">
+                </div>
+            </div>
+            <button onclick="sendResetCode()" class="btn btn-block">
+                <i class="fas fa-paper-plane"></i>
+                إرسال رمز الاستعادة
+            </button>
+            <div style="text-align: center; margin-top: 20px;">
+                <p>تذكرت كلمة المرور؟ <a href="#" onclick="showLogin()" style="color: var(--accent); font-weight: bold;">تسجيل الدخول</a></p>
+            </div>
+        </div>
+
+        <!-- إعادة تعيين كلمة المرور -->
+        <div id="resetPasswordForm" class="card hidden slide-up">
+            <div class="card-header">
+                <h3><i class="fas fa-key"></i> تعيين كلمة مرور جديدة</h3>
+            </div>
+            <div class="form-group">
+                <label for="resetCode">رمز الاستعادة</label>
+                <input type="text" id="resetCode" class="form-control" placeholder="أدخل الرمز المرسل إليك">
+            </div>
+            <div class="form-group">
+                <label for="newPassword">كلمة المرور الجديدة</label>
+                <div class="password-container">
+                    <input type="password" id="newPassword" class="form-control" placeholder="أدخل كلمة المرور الجديدة">
+                    <i class="fas fa-eye toggle-password" onclick="togglePassword('newPassword', this)"></i>
+                </div>
+                <span class="form-text">يجب أن تكون كلمة المرور 6 أحرف على الأقل</span>
+            </div>
+            <div class="form-group">
+                <label for="confirmNewPassword">تأكيد كلمة المرور الجديدة</label>
+                <div class="password-container">
+                    <input type="password" id="confirmNewPassword" class="form-control" placeholder="أكد كلمة المرور الجديدة">
+                    <i class="fas fa-eye toggle-password" onclick="togglePassword('confirmNewPassword', this)"></i>
+                </div>
+            </div>
+            <button onclick="resetPassword()" class="btn btn-block btn-success">
+                <i class="fas fa-save"></i>
+                حفظ كلمة المرور الجديدة
+            </button>
+        </div>
+    </div>
+
+    <!-- لوحة التحكم -->
+    <div id="dashboard" class="hidden">
+        <!-- الصفحة الرئيسية -->
+        <div id="homePage" class="fade-in">
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-wallet"></i> رصيدك الحالي</h3>
+                    <h3 id="userBalance">0 EGP</h3>
+                </div>
+                <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-top: 15px;">
+                    <button onclick="showDeposit()" class="btn">
+                        <i class="fas fa-money-bill-wave"></i>
+                        إيداع
+                    </button>
+                    <button onclick="showWithdraw()" class="btn">
+                        <i class="fas fa-hand-holding-usd"></i>
+                        سحب
+                    </button>
+                    <button onclick="showTransfer()" class="btn btn-outline">
+                        <i class="fas fa-exchange-alt"></i>
+                        تحويل
+                    </button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-chart-line"></i> إحصائيات سريعة</h3>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">الأرباح اليومية</div>
+                        <div class="stat-value" id="dailyProfit">0 EGP</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">إجمالي الأرباح</div>
+                        <div class="stat-value" id="totalProfit">0 EGP</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">أعضاء الفريق</div>
+                        <div class="stat-value" id="teamMembers">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">عمولة الفريق</div>
+                        <div class="stat-value" id="teamCommission">0 EGP</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-gift"></i> عجلة الحظ اليومية</h3>
+                </div>
+                <div class="wheel-container">
+                    <div class="wheel">
+                        <div class="wheel-spinner" id="wheelSpinner">
+                            <div class="wheel-label">50 EGP</div>
+                            <div class="wheel-label">20 EGP</div>
+                            <div class="wheel-label">5 EGP</div>
+                            <div class="wheel-label">10 EGP</div>
+                            <div class="wheel-label">15 EGP</div>
+                        </div>
+                        <div class="wheel-pointer">
+                            <i class="fas fa-arrow-down"></i>
+                        </div>
+                    </div>
+                    <button onclick="spinWheel()" class="btn">
+                        <i class="fas fa-redo"></i>
+                        تدوير العجلة
+                    </button>
+                    <p style="margin-top: 15px; color: var(--accent);">احصل على فرصة ربح من 5 إلى 50 جنيه يومياً!</p>
+                    
+                    <div class="wheel-history" id="wheelHistory">
+                        <p style="text-align: center; width: 100%; color: var(--text-muted);">لا توجد سحوبات سابقة</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-users"></i> نظام الإحالة</h3>
+                </div>
+                <div style="margin-bottom: 15px; text-align: center;">
+                    <p style="margin-bottom: 10px;">استخدم كود الدعوة الخاص بك واكسب 35% عمولة</p>
+                    <h3 style="color: var(--accent);" id="userReferralCode">XXXXXX</h3>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button onclick="copyReferralCode()" class="btn btn-block btn-sm">
+                        <i class="fas fa-copy"></i>
+                        نسخ الرابط
+                    </button>
+                    <button onclick="showReferralDetails()" class="btn btn-block btn-sm btn-outline">
+                        <i class="fas fa-info-circle"></i>
+                        التفاصيل
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- المنتجات -->
+        <div id="productsPage" class="hidden fade-in">
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-mobile-alt"></i> المنتجات الاستثمارية</h3>
+                    <div class="card-actions">
+                        <button onclick="showCalculator()" class="btn btn-sm btn-info">
+                            <i class="fas fa-calculator"></i>
+                            حاسبة الأرباح
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="tabs">
+                    <div class="tab active" onclick="changeProductTab('all')">الكل</div>
+                    <div class="tab" onclick="changeProductTab('mobile')">هواتف</div>
+                    <div class="tab" onclick="changeProductTab('electronics')">إلكترونيات</div>
+                    <div class="tab" onclick="changeProductTab('other')">أخرى</div>
+                </div>
+                
+                <div class="tab-content active" id="allProducts">
+                    <!-- Samsung S22 Ultra -->
+                    <div class="product">
+                        <span class="product-badge">الأكثر مبيعاً</span>
+                        <img src="https://images.samsung.com/is/image/samsung/p6pim/ar/2202/gallery/ar-galaxy-s22-ultra-s908-412948-sm-s908edrgmea-530963541?$650_519_PNG$" 
+                             class="product-image" 
+                             alt="Samsung S22 Ultra"
+                             loading="lazy"
+                             onerror="this.src='https://via.placeholder.com/300x300?text=صورة+غير+متوفرة'">
+                        <h4 class="product-title"><i class="fas fa-mobile"></i> VIP1 - S22 Ultra</h4>
+                        <div class="product-detail">
+                            <span>سعر الشراء:</span>
+                            <span class="detail-value">200 EGP</span>
+                        </div>
+                        <div class="product-detail">
+                            <span>الإيراد اليومي:</span>
+                            <span class="detail-value">40 EGP</span>
+                        </div>
+                        <div class="product-detail">
+                            <span>مدة الاستثمار:</span>
+                            <span class="detail-value">50 يوم</span>
+                        </div>
+                        <div class="product-detail">
+                            <span>إجمالي الإيرادات:</span>
+                            <span class="detail-value">2,000 EGP</span>
+                        </div>
+                        <button onclick="confirmPurchase(200, 40, 'VIP1 - S22 Ultra')" class="btn btn-success" style="width: 100%; margin-top: 15px;">
+                            <i class="fas fa-shopping-cart"></i> شراء الآن
+                        </button>
+                    </div>
+                    
+                    <!-- Samsung S23 Ultra -->
+                    <div class="product">
+                        <img src="https://images.samsung.com/is/image/samsung/p6pim/ar/2301/gallery/ar-galaxy-s23-ultra-5g-sm-s918-412948-sm-s918bzkgmea-535866137?$650_519_PNG$" 
+                             class="product-image" 
+                             alt="Samsung S23 Ultra"
+                             loading="lazy"
+                             onerror="this.src='https://via.placeholder.com/300x300?text=صورة+غير+متوفرة'">
+                        <h4 class="product-title"><i class="fas fa-mobile"></i> VIP2 - S23 Ultra</h4>
+                        <div class="product-detail">
+                            <span>سعر الشراء:</span>
+                            <span class="detail-value">500 EGP</span>
+                        </div>
+                        <div class="product-detail">
+                            <span>الإيراد اليومي:</span>
+                            <span class="detail-value">105 EGP</span>
+                        </div>
+                        <div class="product-detail">
+                            <span>مدة الاستثمار:</span>
+                            <span class="detail-value">50 يوم</span>
+                        </div>
+                        <div class="product-detail">
+                            <span>إجمالي الإيرادات:</span>
+                            <span class="detail-value">5,250 EGP</span>
+                        </div>
+                        <button onclick="confirmPurchase(500, 105, 'VIP2 - S23 Ultra')" class="btn btn-success" style="width: 100%; margin-top: 15px;">
+                            <i class="fas fa-shopping-cart"></i> شراء الآن
+                        </button>
+                    </div>
+                    
+                    <!-- iPhone 14 Pro -->
+                    <div class="product">
+                        <span class="product-badge">جديد</span>
+                        <img src="https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-14-pro-model-unselect-gallery-1-202209?wid=5120&hei=2880&fmt=p-jpg&qlt=80&.v=1660753619946" 
+                             class="product-image" 
+                             alt="iPhone 14 Pro"
+                             loading="lazy"
+                             onerror="this.src='https://via.placeholder.com/300x300?text=صورة+غير+متوفرة'">
+                        <h4 class="product-title"><i class="fas fa-mobile"></i> VIP3 - iPhone 14 Pro</h4>
+                        <div class="product-detail">
+                            <span>سعر الشراء:</span>
+                            <span class="detail-value">800 EGP</span>
+                        </div>
+                        <div class="product-detail">
+                            <span>الإيراد اليومي:</span>
+                            <span class="detail-value">170 EGP</span>
+                        </div>
+                        <div class="product-detail">
+                            <span>مدة الاستثمار:</span>
+                            <span class="detail-value">50 يوم</span>
+                        </div>
+                        <div class="product-detail">
+                            <span>إجمالي الإيرادات:</span>
+                            <span class="detail-value">8,500 EGP</span>
+                        </div>
+                        <button onclick="confirmPurchase(800, 170, 'VIP3 - iPhone 14 Pro')" class="btn btn-success" style="width: 100%; margin-top: 15px;">
+                            <i class="fas fa-shopping-cart"></i> شراء الآن
+                        </button>
+                    </div>
+                    
+                    <!-- Xiaomi 13 Pro -->
+                    <div class="product">
+                        <img src="https://i01.appmifile.com/webfile/globalimg/products/pc/xiaomi-13-pro/specs-header.png" 
+                             class="product-image" 
+                             alt="Xiaomi 13 Pro"
+                             loading="lazy"
+                             onerror="this.src='https://via.placeholder.com/300x300?text=صورة+غير+متوفرة'">
+                        <h4 class="product-title"><i class="fas fa-mobile"></i> VIP4 - Xiaomi 13 Pro</h4>
+                        <div class="product-detail">
+                            <span>سعر الشراء:</span>
+                            <span class="detail-value">400 EGP</span>
+                        </div>
+                        <div class="product-detail">
+                            <span>الإيراد اليومي:</span>
+                            <span class="detail-value">85 EGP</span>
+                        </div>
+                        <div class="product-detail">
+                            <span>مدة الاستثمار:</span>
+                            <span class="detail-value">50 يوم</span>
+                        </div>
+                        <div class="product-detail">
+                            <span>إجمالي الإيرادات:</span>
+                            <span class="detail-value">4,250 EGP</span>
+                        </div>
+                        <button onclick="confirmPurchase(400, 85, 'VIP4 - Xiaomi 13 Pro')" class="btn btn-success" style="width: 100%; margin-top: 15px;">
+                            <i class="fas fa-shopping-cart"></i> شراء الآن
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="mobileProducts">
+                    <!-- سيتم ملؤها بالمنتجات الديناميكية -->
+                    <div class="product">
+                        <img src="https://images.samsung.com/is/image/samsung/p6pim/ar/2202/gallery/ar-galaxy-s22-ultra-s908-412948-sm-s908edrgmea-530963541?$650_519_PNG$" 
+                             class="product-image" 
+                             alt="Samsung S22 Ultra"
+                             loading="lazy"
+                             onerror="this.src='https://via.placeholder.com/300x300?text=صورة+غير+متوفرة'">
+                        <h4 class="product-title"><i class="fas fa-mobile"></i> VIP1 - S22 Ultra</h4>
+                        <div class="product-detail">
+                            <span>سعر الشراء:</span>
+                            <span class="detail-value">200 EGP</span>
+                        </div>
+                        <div class="product-detail">
+                            <span>الإيراد اليومي:</span>
+                            <span class="detail-value">40 EGP</span>
+                        </div>
+                        <div class="product-detail">
+                            <span>مدة الاستثمار:</span>
+                            <span class="detail-value">50 يوم</span>
+                        </div>
+                        <div class="product-detail">
+                            <span>إجمالي الإيرادات:</span>
+                            <span class="detail-value">2,000 EGP</span>
+                        </div>
+                        <button onclick="confirmPurchase(200, 40, 'VIP1 - S22 Ultra')" class="btn btn-success" style="width: 100%; margin-top: 15px;">
+                            <i class="fas fa-shopping-cart"></i> شراء الآن
+                        </button>
+                    </div>
+                    
+                    <div class="product">
+                        <img src="https://images.samsung.com/is/image/samsung/p6pim/ar/2301/gallery/ar-galaxy-s23-ultra-5g-sm-s918-412948-sm-s918bzkgmea-535866137?$650_519_PNG$" 
+                             class="product-image" 
+                             alt="Samsung S23 Ultra"
+                             loading="lazy"
+                             onerror="this.src='https://via.placeholder.com/300x300?text=صورة+غير+متوفرة'">
+                        <h4 class="product-title"><i class="fas fa-mobile"></i> VIP2 - S23 Ultra</h4>
+                        <div class="product-detail">
+                            <span>سعر الشراء:</span>
+                            <span class="detail-value">500 EGP</span>
+                        </div>
+                        <div class="product-detail">
+                            <span>الإيراد اليومي:</span>
+                            <span class="detail-value">105 EGP</span>
+                        </div>
+                        <div class="product-detail">
+                            <span>مدة الاستثمار:</span>
+                            <span class="detail-value">50 يوم</span>
+                        </div>
+                        <div class="product-detail">
+                            <span>إجمالي الإيرادات:</span>
+                            <span class="detail-value">5,250 EGP</span>
+                        </div>
+                        <button onclick="confirmPurchase(500, 105, 'VIP2 - S23 Ultra')" class="btn btn-success" style="width: 100%; margin-top: 15px;">
+                            <i class="fas fa-shopping-cart"></i> شراء الآن
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="electronicsProducts" style="text-align: center; padding: 20px;">
+                    <p>سيتم عرض المنتجات الإلكترونية هنا قريباً</p>
+                </div>
+                
+                <div class="tab-content" id="otherProducts" style="text-align: center; padding: 20px;">
+                    <p>سيتم عرض المنتجات الأخرى هنا قريباً</p>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-box-open"></i> منتجاتي المشتراة</h3>
+                </div>
+                <div id="myProductsList">
+                    <p style="text-align: center; padding: 20px;">لا توجد منتجات مشتراة بعد</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- الفريق -->
+        <div id="teamPage" class="hidden fade-in">
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-users"></i> فريق الإحالة</h3>
+                    <div class="card-actions">
+                        <button onclick="showTeamStats()" class="btn btn-sm btn-info">
+                            <i class="fas fa-chart-pie"></i>
+                            الإحصائيات
+                        </button>
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: space-around; text-align: center; margin-bottom: 20px;">
+                    <div>
+                        <h4 style="color: var(--accent);">إجمالي الأعضاء</h4>
+                        <h3 id="totalMembers">0</h3>
+                    </div>
+                    <div>
+                        <h4 style="color: var(--accent);">إجمالي الأرباح</h4>
+                        <h3 id="totalEarnings">0 EGP</h3>
+                    </div>
+                    <div>
+                        <h4 style="color: var(--accent);">الأعضاء النشطين</h4>
+                        <h3 id="activeMembers">0</h3>
+                    </div>
+                </div>
+                
+                <div class="tabs">
+                    <div class="tab active" onclick="changeTeamTab('level1')">المستوى الأول</div>
+                    <div class="tab" onclick="changeTeamTab('level2')">المستوى الثاني</div>
+                    <div class="tab" onclick="changeTeamTab('level3')">المستوى الثالث</div>
+                </div>
+                
+                <div class="tab-content active" id="level1Members">
+                    <div id="teamMembersList">
+                        <p style="text-align: center; padding: 20px;">لا يوجد أعضاء في فريقك بعد</p>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="level2Members" style="text-align: center; padding: 20px;">
+                    <p>لا يوجد أعضاء في المستوى الثاني من فريقك</p>
+                </div>
+                
+                <div class="tab-content" id="level3Members" style="text-align: center; padding: 20px;">
+                    <p>لا يوجد أعضاء في المستوى الثالث من فريقك</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- المعاملات -->
+        <div id="transactionsPage" class="hidden fade-in">
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-money-bill-wave"></i> الإيداع</h3>
+                </div>
+                <div class="form-group">
+                    <label for="depositAmount">المبلغ (EGP)</label>
+                    <input type="number" id="depositAmount" class="form-control" placeholder="أدخل المبلغ">
+                </div>
+                <div class="form-group">
+                    <label for="depositMethod">طريقة الإيداع</label>
+                    <select id="depositMethod" class="form-control">
+                        <option value="vodafone">فودافون كاش</option>
+                        <option value="etisalat">اتصالات كاش</option>
+                        <option value="orange">اورنج كاش</option>
+                        <option value="we">وي كاش</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="depositPhone">رقم الهاتف</label>
+                    <input type="text" id="depositPhone" class="form-control" placeholder="أدخل رقم الهاتف">
+                </div>
+                <button onclick="processDeposit()" class="btn btn-block">
+                    <i class="fas fa-check-circle"></i>
+                    تأكيد الإيداع
+                </button>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-hand-holding-usd"></i> السحب</h3>
+                </div>
+                <div class="form-group">
+                    <label for="withdrawAmount">المبلغ (EGP)</label>
+                    <input type="number" id="withdrawAmount" class="form-control" placeholder="أدخل المبلغ">
+                    <span class="form-text">الحد الأدنى للسحب: 50 EGP</span>
+                </div>
+                <div class="form-group">
+                    <label for="withdrawMethod">طريقة السحب</label>
+                    <select id="withdrawMethod" class="form-control">
+                        <option value="vodafone">فودافون كاش</option>
+                        <option value="etisalat">اتصالات كاش</option>
+                        <option value="orange">اورنج كاش</option>
+                        <option value="we">وي كاش</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="withdrawPhone">رقم الهاتف</label>
+                    <input type="text" id="withdrawPhone" class="form-control" placeholder="أدخل رقم الهاتف">
+                </div>
+                <button onclick="processWithdrawal()" class="btn btn-block btn-success">
+                    <i class="fas fa-paper-plane"></i>
+                    طلب السحب
+                </button>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-exchange-alt"></i> التحويل</h3>
+                </div>
+                <div class="form-group">
+                    <label for="transferAmount">المبلغ (EGP)</label>
+                    <input type="number" id="transferAmount" class="form-control" placeholder="أدخل المبلغ">
+                    <span class="form-text">الحد الأدنى للتحويل: 10 EGP</span>
+                </div>
+                <div class="form-group">
+                    <label for="transferPhone">رقم هاتف المستلم</label>
+                    <input type="text" id="transferPhone" class="form-control" placeholder="أدخل رقم هاتف المستلم">
+                </div>
+                <button onclick="processTransfer()" class="btn btn-block btn-info">
+                    <i class="fas fa-exchange-alt"></i>
+                    تأكيد التحويل
+                </button>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-history"></i> سجل المعاملات</h3>
+                    <div class="card-actions">
+                        <button onclick="exportTransactions()" class="btn btn-sm btn-outline">
+                            <i class="fas fa-download"></i>
+                            تصدير
+                        </button>
+                    </div>
+                </div>
+                <div id="transactionHistory">
+                    <p style="text-align: center; padding: 20px;">لا توجد معاملات سابقة</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- الملف الشخصي -->
+        <div id="profilePage" class="hidden fade-in">
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-user-circle"></i> الملف الشخصي</h3>
+                    <div class="card-actions">
+                        <button onclick="showEditProfile()" class="btn btn-sm btn-outline">
+                            <i class="fas fa-edit"></i>
+                            تعديل
+                        </button>
+                    </div>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                    <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px;">
+                        <h4 style="color: var(--accent); margin-bottom: 5px; font-size: 14px;">الاسم</h4>
+                        <p id="profileName">-</p>
+                    </div>
+                    <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px;">
+                        <h4 style="color: var(--accent); margin-bottom: 5px; font-size: 14px;">رقم الهاتف</h4>
+                        <p id="profilePhone">-</p>
+                    </div>
+                    <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px;">
+                        <h4 style="color: var(--accent); margin-bottom: 5px; font-size: 14px;">تاريخ التسجيل</h4>
+                        <p id="profileJoinDate">-</p>
+                    </div>
+                    <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px;">
+                        <h4 style="color: var(--accent); margin-bottom: 5px; font-size: 14px;">رمز الدعوة</h4>
+                        <p id="profileReferralCode">-</p>
+                    </div>
+                </div>
+                
+                <div class="card" style="margin-top: 20px; background: rgba(0,0,0,0.2);">
+                    <div class="card-header">
+                        <h3><i class="fas fa-shield-alt"></i> الأمان</h3>
+                    </div>
+                    <button onclick="changePassword()" class="btn btn-block" style="margin-bottom: 10px;">
+                        <i class="fas fa-key"></i>
+                        تغيير كلمة المرور
+                    </button>
+                    <button onclick="enable2FA()" class="btn btn-block btn-outline">
+                        <i class="fas fa-lock"></i>
+                        تفعيل المصادقة الثنائية
+                    </button>
+                </div>
+                
+                <div style="margin-top: 30px; border-top: 1px solid var(--border); padding-top: 20px;">
+                    <h3 style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-headset"></i> خدمة العملاء
+                    </h3>
+                    <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
+                        <a href="https://t.me/+_OMKzsm346YxMDQ0" class="btn" target="_blank" style="background: #0088cc; color: white;">
+                            <i class="fab fa-telegram"></i> Telegram
+                        </a>
+                        <a href="https://wa.me/201211387493" class="btn" target="_blank" style="background: #25D366; color: white;">
+                            <i class="fab fa-whatsapp"></i> WhatsApp
+                        </a>
+                        <button onclick="showContactForm()" class="btn btn-info">
+                            <i class="fas fa-envelope"></i> اتصل بنا
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- شريط تنقل سفلي -->
+    <div id="bottomNav" class="bottom-nav hidden">
+        <div class="nav-item active" onclick="showPage('homePage')">
+            <i class="fas fa-home"></i>
+            <span>الرئيسية</span>
+        </div>
+        <div class="nav-item" onclick="showPage('productsPage')">
+            <i class="fas fa-mobile-alt"></i>
+            <span>المنتجات</span>
+        </div>
+        <div class="nav-item" onclick="showPage('teamPage')">
+            <i class="fas fa-users"></i>
+            <span>الفريق</span>
+            <div id="teamBadge" class="nav-badge hidden">0</div>
+        </div>
+        <div class="nav-item" onclick="showPage('transactionsPage')">
+            <i class="fas fa-exchange-alt"></i>
+            <span>المعاملات</span>
+        </div>
+        <div class="nav-item" onclick="showPage('profilePage')">
+            <i class="fas fa-user"></i>
+            <span>حسابي</span>
+        </div>
+    </div>
+
+    <!-- إشعارات -->
+    <div id="notification" class="notification hidden"></div>
+
+    <!-- مودال الإشعارات -->
+    <div id="notificationsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-bell"></i> الإشعارات</h3>
+                <button class="modal-close" onclick="hideModal('notificationsModal')">&times;</button>
+            </div>
+            <div class="notifications-list" id="notificationsList">
+                <!-- سيتم ملؤها ديناميكياً -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-sm btn-danger" onclick="clearNotifications()">
+                    <i class="fas fa-trash"></i> مسح الكل
+                </button>
+                <button class="btn btn-sm" onclick="hideModal('notificationsModal')">
+                    <i class="fas fa-times"></i> إغلاق
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- مودال تأكيد الشراء -->
+    <div id="purchaseModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-shopping-cart"></i> تأكيد الشراء</h3>
+                <button class="modal-close" onclick="hideModal('purchaseModal')">&times;</button>
+            </div>
+            <div id="purchaseModalContent">
+                <p>هل أنت متأكد من شراء <span id="productNameConfirm" style="color: var(--accent); font-weight: bold;"></span> بمبلغ <span id="productPriceConfirm" style="color: var(--accent); font-weight: bold;"></span> EGP؟</p>
+                <p style="margin-top: 10px;">سوف تحصل على <span id="productProfitConfirm" style="color: var(--success); font-weight: bold;"></span> EGP يومياً لمدة 50 يوم.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-sm btn-danger" onclick="hideModal('purchaseModal')">
+                    <i class="fas fa-times"></i> إلغاء
+                </button>
+                <button class="btn btn-sm btn-success" onclick="completePurchase()">
+                    <i class="fas fa-check"></i> تأكيد
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- مودال تفاصيل الإحالة -->
+    <div id="referralModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-users"></i> نظام الإحالة</h3>
+                <button class="modal-close" onclick="hideModal('referralModal')">&times;</button>
+            </div>
+            <div>
+                <p style="margin-bottom: 15px;">احصل على عمولة تصل إلى 35% على استثمارات فريقك:</p>
+                <ul style="list-style-type: none; padding-right: 15px; margin-bottom: 20px;">
+                    <li style="margin-bottom: 10px; display: flex; align-items: center; gap: 10px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 8px;">
+                        <span style="background: var(--accent); color: var(--dark); width: 25px; height: 25px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">1</span>
+                        <span>35% عمولة على المستوى الأول</span>
+                    </li>
+                    <li style="margin-bottom: 10px; display: flex; align-items: center; gap: 10px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 8px;">
+                        <span style="background: var(--accent); color: var(--dark); width: 25px; height: 25px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">2</span>
+                        <span>3% عمولة على المستوى الثاني</span>
+                    </li>
+                    <li style="display: flex; align-items: center; gap: 10px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 8px;">
+                        <span style="background: var(--accent); color: var(--dark); width: 25px; height: 25px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">3</span>
+                        <span>2% عمولة على المستوى الثالث</span>
+                    </li>
+                </ul>
+                <div class="form-group">
+                    <label>رابط الدعوة الخاص بك:</label>
+                    <div class="input-group">
+                        <input type="text" id="referralLink" class="form-control" value="https://pro-niovip.com/reg?ic=XXXXXX" readonly>
+                        <button class="btn btn-sm" onclick="copyReferralLink()">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-sm" onclick="hideModal('referralModal')">
+                    <i class="fas fa-times"></i> إغلاق
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- مودال إحصائيات الفريق -->
+    <div id="teamStatsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-chart-pie"></i> إحصائيات الفريق</h3>
+                <button class="modal-close" onclick="hideModal('teamStatsModal')">&times;</button>
+            </div>
+            <div>
+                <div class="chart-container">
+                    <canvas id="teamStatsChart"></canvas>
+                </div>
+                <div class="stats-grid" style="margin-top: 20px;">
+                    <div class="stat-card">
+                        <div class="stat-label">إجمالي الأعضاء</div>
+                        <div class="stat-value">15</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">إجمالي الأرباح</div>
+                        <div class="stat-value">1,250 EGP</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">أعضاء نشطين</div>
+                        <div class="stat-value">8</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">عمولة متوقعة</div>
+                        <div class="stat-value">350 EGP</div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-sm" onclick="hideModal('teamStatsModal')">
+                    <i class="fas fa-times"></i> إغلاق
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- مودال حاسبة الأرباح -->
+    <div id="calculatorModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-calculator"></i> حاسبة الأرباح</h3>
+                <button class="modal-close" onclick="hideModal('calculatorModal')">&times;</button>
+            </div>
+            <div>
+                <div class="form-group">
+                    <label for="calcAmount">مبلغ الاستثمار (EGP)</label>
+                    <input type="number" id="calcAmount" class="form-control" placeholder="أدخل المبلغ" value="500">
+                </div>
+                <div class="form-group">
+                    <label for="calcDays">عدد الأيام</label>
+                    <input type="number" id="calcDays" class="form-control" placeholder="أدخل عدد الأيام" value="50">
+                </div>
+                <div class="form-group">
+                    <label for="calcRate">معدل العائد اليومي (%)</label>
+                    <input type="number" id="calcRate" class="form-control" placeholder="أدخل النسبة" value="20">
+                </div>
+                <button onclick="calculateProfit()" class="btn btn-block">
+                    <i class="fas fa-calculator"></i> حساب الأرباح
+                </button>
+                <div class="card" style="margin-top: 20px; text-align: center; display: none;" id="calcResult">
+                    <h4 style="color: var(--accent); margin-bottom: 10px;">النتيجة</h4>
+                    <div class="product-detail">
+                        <span>الأرباح اليومية:</span>
+                        <span class="detail-value" id="dailyProfitCalc">0 EGP</span>
+                    </div>
+                    <div class="product-detail">
+                        <span>إجمالي الأرباح:</span>
+                        <span class="detail-value" id="totalProfitCalc">0 EGP</span>
+                    </div>
+                    <div class="product-detail">
+                        <span>صافي الربح:</span>
+                        <span class="detail-value" id="netProfitCalc">0 EGP</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-sm" onclick="hideModal('calculatorModal')">
+                    <i class="fas fa-times"></i> إغلاق
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- مودال تغيير كلمة المرور -->
+    <div id="passwordModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-key"></i> تغيير كلمة المرور</h3>
+                <button class="modal-close" onclick="hideModal('passwordModal')">&times;</button>
+            </div>
+            <div>
+                <div class="form-group">
+                    <label for="currentPassword">كلمة المرور الحالية</label>
+                    <div class="password-container">
+                        <input type="password" id="currentPassword" class="form-control" placeholder="أدخل كلمة المرور الحالية">
+                        <i class="fas fa-eye toggle-password" onclick="togglePassword('currentPassword', this)"></i>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="newPassword">كلمة المرور الجديدة</label>
+                    <div class="password-container">
+                        <input type="password" id="newPasswordModal" class="form-control" placeholder="أدخل كلمة المرور الجديدة">
+                        <i class="fas fa-eye toggle-password" onclick="togglePassword('newPasswordModal', this)"></i>
+                    </div>
+                    <span class="form-text">يجب أن تكون كلمة المرور 6 أحرف على الأقل</span>
+                </div>
+                <div class="form-group">
+                    <label for="confirmNewPassword">تأكيد كلمة المرور الجديدة</label>
+                    <div class="password-container">
+                        <input type="password" id="confirmNewPasswordModal" class="form-control" placeholder="أكد كلمة المرور الجديدة">
+                        <i class="fas fa-eye toggle-password" onclick="togglePassword('confirmNewPasswordModal', this)"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-sm btn-danger" onclick="hideModal('passwordModal')">
+                    <i class="fas fa-times"></i> إلغاء
+                </button>
+                <button class="btn btn-sm btn-success" onclick="updatePassword()">
+                    <i class="fas fa-save"></i> حفظ
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- مودال المصادقة الثنائية -->
+    <div id="twoFAModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-lock"></i> المصادقة الثنائية</h3>
+                <button class="modal-close" onclick="hideModal('twoFAModal')">&times;</button>
+            </div>
+            <div>
+                <p style="margin-bottom: 15px;">لتفعيل المصادقة الثنائية، يرجى استخدام أحد التطبيقات التالية:</p>
+                <div style="display: flex; justify-content: center; gap: 15px; margin-bottom: 20px;">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Google_Authenticator_app_icon.png/240px-Google_Authenticator_app_icon.png" style="width: 50px; height: 50px; object-fit: contain;">
+                    <img src="https://authy.com/wp-content/uploads/2019/12/authy-logo-1.png" style="width: 50px; height: 50px; object-fit: contain;">
+                </div>
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <img id="twoFACode" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=otpauth://totp/NIOVIP:user@example.com?secret=JBSWY3DPEHPK3PXP&issuer=NIOVIP" style="width: 200px; height: 200px; margin: 0 auto;">
+                    <p style="margin-top: 10px; font-family: monospace; font-size: 16px;">JBSWY3DPEHPK3PXP</p>
+                </div>
+                <div class="form-group">
+                    <label for="twoFACodeInput">رمز التحقق</label>
+                    <input type="text" id="twoFACodeInput" class="form-control" placeholder="أدخل الرمز المكون من 6 أرقام">
+                </div>
+                <button onclick="verify2FACode()" class="btn btn-block btn-success">
+                    <i class="fas fa-check"></i> تأكيد
+                </button>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-sm" onclick="hideModal('twoFAModal')">
+                    <i class="fas fa-times"></i> إغلاق
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- مودال اتصل بنا -->
+    <div id="contactModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-envelope"></i> اتصل بنا</h3>
+                <button class="modal-close" onclick="hideModal('contactModal')">&times;</button>
+            </div>
+            <div>
+                <div class="form-group">
+                    <label for="contactSubject">الموضوع</label>
+                    <select id="contactSubject" class="form-control">
+                        <option value="support">الدعم الفني</option>
+                        <option value="deposit">مشكلة في الإيداع</option>
+                        <option value="withdrawal">مشكلة في السحب</option>
+                        <option value="other">استفسار آخر</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="contactMessage">الرسالة</label>
+                    <textarea id="contactMessage" class="form-control" rows="5" placeholder="أدخل رسالتك هنا"></textarea>
+                </div>
+                <button onclick="sendContactMessage()" class="btn btn-block">
+                    <i class="fas fa-paper-plane"></i> إرسال
+                </button>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-sm" onclick="hideModal('contactModal')">
+                    <i class="fas fa-times"></i> إغلاق
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- مودال تعديل الملف الشخصي -->
+    <div id="editProfileModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-user-edit"></i> تعديل الملف الشخصي</h3>
+                <button class="modal-close" onclick="hideModal('editProfileModal')">&times;</button>
+            </div>
+            <div>
+                <div class="form-group">
+                    <label for="editName">الاسم الكامل</label>
+                    <input type="text" id="editName" class="form-control" placeholder="أدخل الاسم الكامل">
+                </div>
+                <div class="form-group">
+                    <label for="editPhone">رقم الهاتف</label>
+                    <div class="input-group">
+                        <span class="input-group-prepend">+20</span>
+                        <input type="text" id="editPhone" class="form-control" placeholder="أدخل رقم الهاتف" readonly>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="editEmail">البريد الإلكتروني (اختياري)</label>
+                    <input type="email" id="editEmail" class="form-control" placeholder="أدخل البريد الإلكتروني">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-sm btn-danger" onclick="hideModal('editProfileModal')">
+                    <i class="fas fa-times"></i> إلغاء
+                </button>
+                <button class="btn btn-sm btn-success" onclick="saveProfile()">
+                    <i class="fas fa-save"></i> حفظ
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+    <script>
+        // بيانات التطبيق
+        let users = JSON.parse(localStorage.getItem('nioUsers')) || [];
+        let currentUser = null;
+        let balance = 0;
+        let purchasedProducts = [];
+        let transactions = [];
+        let notifications = [];
+        let lastSpinDate = null;
+        let selectedProduct = null;
+
+        // نظام المهام اليومية
+        let dailyTasks = [
+            { id: 1, name: "سجل الدخول اليومي", reward: 5, completed: false },
+            { id: 2, name: "شراء منتج", reward: 10, completed: false },
+            { id: 3, name: "إحالة صديق", reward: 15, completed: false }
+        ];
+
+        // نظام VIP
+        let vipLevels = [
+            { level: 1, name: "عادي", minDeposit: 0, benefits: ["مكافأة يومية 5 جنيه"] },
+            { level: 2, name: "فضي", minDeposit: 500, benefits: ["مكافأة يومية 10 جنيه", "عمولة إحالة 40%"] },
+            { level: 3, name: "ذهبي", minDeposit: 2000, benefits: ["مكافأة يومية 20 جنيه", "عمولة إحالة 45%", "سحب فوري"] },
+            { level: 4, name: "بلاتينيوم", minDeposit: 5000, benefits: ["مكافأة يومية 50 جنيه", "عمولة إحالة 50%", "دعم مميز"] }
+        ];
+
+        // تهيئة التطبيق عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', function() {
+            checkLoginStatus();
+            initCharts();
+            loadSampleData();
+            
+            // إضافة تأثيرات للعجلة
+            const wheel = document.getElementById('wheelSpinner');
+            wheel.style.transform = 'rotate(0deg)';
+            
+            // ربط الأحداث
+            bindEvents();
+            
+            // إظهار إشعار الترحيب للمستخدمين الجدد
+            setTimeout(() => {
+                showWelcomeNotification();
+            }, 2000);
+        });
+
+        // التحقق من حالة تسجيل الدخول
+        function checkLoginStatus() {
+            const loggedInUser = localStorage.getItem('nioLoggedInUser');
+            if (loggedInUser) {
+                currentUser = JSON.parse(loggedInUser);
+                balance = currentUser.balance || 0;
+                loadUserData();
+                showDashboard();
+            } else {
+                showLogin();
+            }
+        }
+
+        // تحميل بيانات المستخدم
+        function loadUserData() {
+            if (!currentUser) return;
+            
+            // تحديث واجهة المستخدم
+            document.getElementById('userBalance').textContent = balance + ' EGP';
+            document.getElementById('profileName').textContent = currentUser.name;
+            document.getElementById('profilePhone').textContent = currentUser.phone;
+            document.getElementById('profileJoinDate').textContent = currentUser.joinDate || new Date().toLocaleDateString();
+            document.getElementById('profileReferralCode').textContent = currentUser.referralCode || generateReferralCode();
+            document.getElementById('userReferralCode').textContent = currentUser.referralCode || generateReferralCode();
+            
+            // تحميل المنتجات المشتراة
+            purchasedProducts = currentUser.products || [];
+            updatePurchasedProducts();
+            
+            // تحميل المعاملات
+            transactions = currentUser.transactions || [];
+            updateTransactions();
+            
+            // تحميل الإشعارات
+            notifications = currentUser.notifications || [];
+            updateNotificationBadge();
+            
+            // التحقق من صلاحيات المدير
+            if (currentUser.isAdmin) {
+                document.getElementById('adminBadge').classList.remove('hidden');
+            }
+        }
+
+        // تسجيل الدخول
+        function login() {
+            const phone = '20' + document.getElementById('loginPhone').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            if (!phone || !password) {
+                return showNotification('الرجاء إدخال رقم الهاتف وكلمة المرور', 'error');
+            }
+            
+            const user = users.find(u => u.phone === phone && u.password === password);
+            if (user) {
+                currentUser = user;
+                localStorage.setItem('nioLoggedInUser', JSON.stringify(user));
+                showDashboard();
+                showNotification('تم تسجيل الدخول بنجاح', 'success');
+                
+                // إضافة مكافأة التسجيل اليومي
+                if (!user.lastLogin || new Date(user.lastLogin).toDateString() !== new Date().toDateString()) {
+                    addBalance(5, 'مكافأة تسجيل يومي');
+                    user.lastLogin = new Date().toISOString();
+                    saveUserData();
+                }
+            } else {
+                showNotification('رقم الهاتف أو كلمة المرور غير صحيحة', 'error');
+            }
+        }
+
+        // تسجيل مستخدم جديد
+        function register() {
+            const name = document.getElementById('regName').value;
+            const phone = '20' + document.getElementById('regPhone').value;
+            const password = document.getElementById('regPassword').value;
+            const confirmPassword = document.getElementById('regConfirmPassword').value;
+            const referralCode = document.getElementById('referralCode').value;
+            
+            if (!name || !phone || !password || !confirmPassword) {
+                return showNotification('الرجاء ملء جميع الحقول المطلوبة', 'error');
+            }
+            
+            if (password.length < 6) {
+                return showNotification('كلمة المرور يجب أن تكون 6 أحرف على الأقل', 'error');
+            }
+            
+            if (password !== confirmPassword) {
+                return showNotification('كلمة المرور غير متطابقة', 'error');
+            }
+            
+            if (users.some(u => u.phone === phone)) {
+                return showNotification('رقم الهاتف مسجل بالفعل', 'error');
+            }
+            
+            const newUser = {
+                id: Date.now(),
+                name,
+                phone,
+                password,
+                balance: 100, // مكافأة التسجيل
+                referralCode: generateReferralCode(),
+                joinDate: new Date().toLocaleDateString(),
+                products: [],
+                transactions: [
+                    {
+                        id: Date.now(),
+                        type: 'deposit',
+                        amount: 100,
+                        date: new Date().toISOString(),
+                        description: 'مكافأة تسجيل جديد'
+                    }
+                ],
+                notifications: [],
+                team: [],
+                isAdmin: phone === '201234567890' // جعل هذا الرقم مديراً للاختبار
+            };
+            
+            // تطبيق كود الدعوة إن وجد
+            if (referralCode) {
+                const referrer = users.find(u => u.referralCode === referralCode);
+                if (referrer) {
+                    referrer.team.push({
+                        userId: newUser.id,
+                        name: newUser.name,
+                        phone: newUser.phone,
+                        joinDate: newDate().toLocaleDateString(),
+                        level: 1
+                    });
+                    
+                    // منح المكافأة للمدعو
+                    newUser.balance += 50;
+                    newUser.transactions.push({
+                        id: Date.now(),
+                        type: 'deposit',
+                        amount: 50,
+                        date: new Date().toISOString(),
+                        description: 'مكافأة استخدام كود دعوة'
+                    });
+                    
+                    // منح المكافأة للمدعِي
+                    addReferralBonus(referrer, newUser.id, 50);
+                    
+                    saveUserData(referrer);
+                }
+            }
+            
+            users.push(newUser);
+            localStorage.setItem('nioUsers', JSON.stringify(users));
+            
+            currentUser = newUser;
+            localStorage.setItem('nioLoggedInUser', JSON.stringify(newUser));
+            
+            showDashboard();
+            showNotification('تم إنشاء الحساب بنجاح! لقد حصلت على مكافأة 100 جنيه', 'success');
+            
+            // إرسال إشعار ترحيبي
+            showWelcomeNotification();
+        }
+
+        // توليد كود دعوة عشوائي
+        function generateReferralCode() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let result = '';
+            for (let i = 0; i < 6; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+
+        // إضافة مكافأة الإحالة
+        function addReferralBonus(user, referredUserId, amount) {
+            user.balance += amount;
+            user.transactions.push({
+                id: Date.now(),
+                type: 'deposit',
+                amount: amount,
+                date: new Date().toISOString(),
+                description: `عمولة إحالة للمستخدم ${referredUserId}`
+            });
+            
+            user.notifications.push({
+                id: Date.now(),
+                title: 'عمولة إحالة جديدة',
+                message: `لقد حصلت على ${amount} جنيه عمولة إحالة`,
+                date: new Date().toISOString(),
+                read: false
+            });
+            
+            showNotification(`تمت إضافة ${amount} جنيه لرصيدك كعمولة إحالة`, 'success');
+        }
+
+        // تسجيل الخروج
+        function logout() {
+            if (currentUser) {
+                saveUserData();
+                currentUser = null;
+            }
+            localStorage.removeItem('nioLoggedInUser');
+            showLogin();
+            showNotification('تم تسجيل الخروج بنجاح', 'success');
+        }
+
+        // حفظ بيانات المستخدم
+        function saveUserData(user = currentUser) {
+            if (!user) return;
+            
+            const userIndex = users.findIndex(u => u.id === user.id);
+            if (userIndex !== -1) {
+                users[userIndex] = user;
+                localStorage.setItem('nioUsers', JSON.stringify(users));
+                localStorage.setItem('nioLoggedInUser', JSON.stringify(user));
+            }
+        }
+
+        // عرض لوحة التحكم
+        function showDashboard() {
+            document.getElementById('loginContainer').classList.add('hidden');
+            document.getElementById('dashboard').classList.remove('hidden');
+            document.getElementById('bottomNav').classList.remove('hidden');
+            document.getElementById('mainNavbar').classList.remove('hidden');
+            showPage('homePage');
+        }
+
+        // عرض صفحة تسجيل الدخول
+        function showLogin() {
+            document.getElementById('loginContainer').classList.remove('hidden');
+            document.getElementById('dashboard').classList.add('hidden');
+            document.getElementById('bottomNav').classList.add('hidden');
+            document.getElementById('mainNavbar').classList.add('hidden');
+            document.getElementById('loginForm').classList.remove('hidden');
+            document.getElementById('registerForm').classList.add('hidden');
+            document.getElementById('forgotPasswordForm').classList.add('hidden');
+            document.getElementById('resetPasswordForm').classList.add('hidden');
+        }
+
+        // عرض نموذج التسجيل
+        function showRegister() {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('registerForm').classList.remove('hidden');
+        }
+
+        // عرض نموذج نسيان كلمة المرور
+        function showForgotPassword() {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('forgotPasswordForm').classList.remove('hidden');
+        }
+
+        // عرض صفحة معينة
+        function showPage(pageId) {
+            document.querySelectorAll('#dashboard > div').forEach(div => {
+                div.classList.add('hidden');
+            });
+            document.getElementById(pageId).classList.remove('hidden');
+            
+            // تحديث القائمة السفلية
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector(`.nav-item[onclick="showPage('${pageId}')"]`).classList.add('active');
+        }
+
+        // إظهار/إخفاء كلمة المرور
+        function togglePassword(inputId, icon) {
+            const input = document.getElementById(inputId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        // عرض الإشعارات
+        function showNotification(message, type = 'info') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification notification-${type}`;
+            notification.classList.remove('hidden');
+            
+            setTimeout(() => {
+                notification.classList.add('hidden');
+            }, 5000);
+        }
+
+        // تدوير عجلة الحظ
+        function spinWheel() {
+            if (!currentUser) return;
+            
+            // التحقق من أن المستخدم لم يدور العجلة اليوم
+            const today = new Date().toDateString();
+            if (lastSpinDate === today) {
+                return showNotification('لقد قمت بتدوير العجلة اليوم بالفعل، عد غداً!', 'error');
+            }
+            
+            const wheel = document.getElementById('wheelSpinner');
+            const spinDegree = 1080 + Math.floor(Math.random() * 360); // بين 1080 و 1440 درجة
+            wheel.style.transform = `rotate(${spinDegree}deg)`;
+            
+            // حساب الجائزة بناء على درجة الدوران
+            setTimeout(() => {
+                const actualDegree = spinDegree % 360;
+                let prize = 5; // القيمة الافتراضية
+                
+                if (actualDegree >= 0 && actualDegree < 72) prize = 50;
+                else if (actualDegree >= 72 && actualDegree < 144) prize = 20;
+                else if (actualDegree >= 144 && actualDegree < 216) prize = 5;
+                else if (actualDegree >= 216 && actualDegree < 288) prize = 10;
+                else prize = 15;
+                
+                // إضافة الجائزة للرصيد
+                addBalance(prize, `جائزة عجلة الحظ: ${prize} EGP`);
+                
+                // تحديث سجل الجوائز
+                const wheelHistory = document.getElementById('wheelHistory');
+                if (wheelHistory.innerHTML.includes('لا توجد سحوبات سابقة')) {
+                    wheelHistory.innerHTML = '';
+                }
+                
+                const historyItem = document.createElement('div');
+                historyItem.className = 'wheel-history-item';
+                historyItem.textContent = prize;
+                wheelHistory.prepend(historyItem);
+                
+                // تحديث تاريخ آخر دوران
+                lastSpinDate = today;
+                currentUser.lastSpinDate = today;
+                saveUserData();
+                
+                showNotification(`مبروك! لقد ربحت ${prize} جنيه`, 'success');
+            }, 3000);
+        }
+
+        // إضافة رصيد
+        function addBalance(amount, description) {
+            if (!currentUser) return;
+            
+            balance += amount;
+            currentUser.balance = balance;
+            document.getElementById('userBalance').textContent = balance + ' EGP';
+            
+            // تسجيل المعاملة
+            const transaction = {
+                id: Date.now(),
+                type: 'deposit',
+                amount: amount,
+                date: new Date().toISOString(),
+                description: description
+            };
+            
+            transactions.unshift(transaction);
+            currentUser.transactions = transactions;
+            
+            // تحديث واجهة المستخدم
+            updateTransactions();
+            
+            // إرسال إشعار
+            currentUser.notifications.unshift({
+                id: Date.now(),
+                title: 'تم إضافة رصيد',
+                message: description,
+                date: new Date().toISOString(),
+                read: false
+            });
+            
+            updateNotificationBadge();
+            saveUserData();
+        }
+
+        // سحب رصيد
+        function subtractBalance(amount, description) {
+            if (!currentUser) return false;
+            
+            if (balance < amount) {
+                showNotification('رصيدك غير كافي', 'error');
+                return false;
+            }
+            
+            balance -= amount;
+            currentUser.balance = balance;
+            document.getElementById('userBalance').textContent = balance + ' EGP';
+            
+            // تسجيل المعاملة
+            const transaction = {
+                id: Date.now(),
+                type: 'withdraw',
+                amount: amount,
+                date: new Date().toISOString(),
+                description: description
+            };
+            
+            transactions.unshift(transaction);
+            currentUser.transactions = transactions;
+            
+            // تحديث واجهة المستخدم
+            updateTransactions();
+            
+            // إرسال إشعار
+            currentUser.notifications.unshift({
+                id: Date.now(),
+                title: 'تم خصم رصيد',
+                message: description,
+                date: new Date().toISOString(),
+                read: false
+            });
+            
+            updateNotificationBadge();
+            saveUserData();
+            return true;
+        }
+
+        // تأكيد شراء المنتج
+        function confirmPurchase(price, dailyProfit, productName) {
+            if (!currentUser) return;
+            
+            if (balance < price) {
+                return showNotification('رصيدك غير كافي لشراء هذا المنتج', 'error');
+            }
+            
+            selectedProduct = { price, dailyProfit, productName };
+            
+            document.getElementById('productNameConfirm').textContent = productName;
+            document.getElementById('productPriceConfirm').textContent = price;
+            document.getElementById('productProfitConfirm').textContent = dailyProfit;
+            
+            showModal('purchaseModal');
+        }
+
+        // إتمام عملية الشراء
+        function completePurchase() {
+            if (!selectedProduct || !currentUser) return;
+            
+            const { price, dailyProfit, productName } = selectedProduct;
+            
+            if (subtractBalance(price, `شراء منتج: ${productName}`)) {
+                // إضافة المنتج للمشتريات
+                const product = {
+                    id: Date.now(),
+                    name: productName,
+                    purchaseDate: new Date().toISOString(),
+                    price: price,
+                    dailyProfit: dailyProfit,
+                    duration: 50,
+                    totalProfit: dailyProfit * 50,
+                    collectedProfit: 0
+                };
+                
+                purchasedProducts.unshift(product);
+                currentUser.products = purchasedProducts;
+                
+                // تحديث الواجهة
+                updatePurchasedProducts();
+                
+                // إرسال إشعار
+                currentUser.notifications.unshift({
+                    id: Date.now(),
+                    title: 'تم شراء منتج جديد',
+                    message: `تم شراء ${productName} بنجاح`,
+                    date: new Date().toISOString(),
+                    read: false
+                });
+                
+                updateNotificationBadge();
+                saveUserData();
+                
+                showNotification(`تم شراء ${productName} بنجاح! سيتم إضافة ${dailyProfit} جنيه يومياً لرصيدك`, 'success');
+                hideModal('purchaseModal');
+            }
+        }
+
+        // تحديث قائمة المنتجات المشتراة
+        function updatePurchasedProducts() {
+            const container = document.getElementById('myProductsList');
+            
+            if (!purchasedProducts.length) {
+                container.innerHTML = '<p style="text-align: center; padding: 20px;">لا توجد منتجات مشتراة بعد</p>';
+                return;
+            }
+            
+            let html = '<div style="overflow-x: auto;"><table class="data-table"><thead><tr>';
+            html += '<th>المنتج</th><th>تاريخ الشراء</th><th>الإيراد اليومي</th><th>الأرباح المجمعة</th><th>الإجمالي المتوقع</th>';
+            html += '</tr></thead><tbody>';
+            
+            purchasedProducts.forEach(product => {
+                html += `<tr>
+                    <td>${product.name}</td>
+                    <td>${new Date(product.purchaseDate).toLocaleDateString()}</td>
+                    <td>${product.dailyProfit} EGP</td>
+                    <td>${product.collectedProfit} EGP</td>
+                    <td>${product.totalProfit} EGP</td>
+                </tr>`;
+            });
+            
+            html += '</tbody></table></div>';
+            container.innerHTML = html;
+        }
+
+        // تحديث سجل المعاملات
+        function updateTransactions() {
+            const container = document.getElementById('transactionHistory');
+            
+            if (!transactions.length) {
+                container.innerHTML = '<p style="text-align: center; padding: 20px;">لا توجد معاملات سابقة</p>';
+                return;
+            }
+            
+            let html = '<div style="overflow-x: auto;"><table class="data-table"><thead><tr>';
+            html += '<th>التاريخ</th><th>النوع</th><th>المبلغ</th><th>الوصف</th>';
+            html += '</tr></thead><tbody>';
+            
+            transactions.forEach(trans => {
+                const typeClass = trans.type === 'deposit' ? 'success' : 'danger';
+                html += `<tr>
+                    <td>${new Date(trans.date).toLocaleDateString()}</td>
+                    <td><span class="badge badge-${typeClass}">${trans.type === 'deposit' ? 'إيداع' : 'سحب'}</span></td>
+                    <td>${trans.amount} EGP</td>
+                    <td>${trans.description}</td>
+                </tr>`;
+            });
+            
+            html += '</tbody></table></div>';
+            container.innerHTML = html;
+        }
+
+        // عرض مودال
+        function showModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        // إخفاء مودال
+        function hideModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // نسخ كود الدعوة
+        function copyReferralCode() {
+            const referralCode = document.getElementById('userReferralCode').textContent;
+            navigator.clipboard.writeText(referralCode)
+                .then(() => showNotification('تم نسخ كود الدعوة', 'success'))
+                .catch(() => showNotification('فشل نسخ كود الدعوة', 'error'));
+        }
+
+        // عرض تفاصيل الإحالة
+        function showReferralDetails() {
+            showModal('referralModal');
+        }
+
+        // نسخ رابط الدعوة
+        function copyReferralLink() {
+            const referralLink = document.getElementById('referralLink');
+            navigator.clipboard.writeText(referralLink.value)
+                .then(() => showNotification('تم نسخ رابط الدعوة', 'success'))
+                .catch(() => showNotification('فشل نسخ رابط الدعوة', 'error'));
+        }
+
+        // عرض إحصائيات الفريق
+        function showTeamStats() {
+            showModal('teamStatsModal');
+        }
+
+        // عرض حاسبة الأرباح
+        function showCalculator() {
+            showModal('calculatorModal');
+        }
+
+        // حساب الأرباح
+        function calculateProfit() {
+            const amount = parseFloat(document.getElementById('calcAmount').value) || 0;
+            const days = parseInt(document.getElementById('calcDays').value) || 0;
+            const rate = parseFloat(document.getElementById('calcRate').value) || 0;
+            
+            if (!amount || !days || !rate) {
+                return showNotification('الرجاء إدخال جميع القيم', 'error');
+            }
+            
+            const dailyProfit = (amount * rate / 100).toFixed(2);
+            const totalProfit = (dailyProfit * days).toFixed(2);
+            const netProfit = (totalProfit - amount).toFixed(2);
+            
+            const resultDiv = document.getElementById('calcResult');
+            document.getElementById('dailyProfitCalc').textContent = dailyProfit + ' EGP';
+            document.getElementById('totalProfitCalc').textContent = totalProfit + ' EGP';
+            document.getElementById('netProfitCalc').textContent = netProfit + ' EGP';
+            
+            resultDiv.style.display = 'block';
+        }
+
+        // عرض نموذج تغيير كلمة المرور
+        function changePassword() {
+            showModal('passwordModal');
+        }
+
+        // تحديث كلمة المرور
+        function updatePassword() {
+            const currentPass = document.getElementById('currentPassword').value;
+            const newPass = document.getElementById('newPasswordModal').value;
+            const confirmPass = document.getElementById('confirmNewPasswordModal').value;
+            
+            if (!currentPass || !newPass || !confirmPass) {
+                return showNotification('الرجاء ملء جميع الحقول', 'error');
+            }
+            
+            if (currentPass !== currentUser.password) {
+                return showNotification('كلمة المرور الحالية غير صحيحة', 'error');
+            }
+            
+            if (newPass.length < 6) {
+                return showNotification('كلمة المرور الجديدة يجب أن تكون 6 أحرف على الأقل', 'error');
+            }
+            
+            if (newPass !== confirmPass) {
+                return showNotification('كلمة المرور الجديدة غير متطابقة', 'error');
+            }
+            
+            currentUser.password = newPass;
+            saveUserData();
+            
+            showNotification('تم تغيير كلمة المرور بنجاح', 'success');
+            hideModal('passwordModal');
+            
+            // مسح الحقول
+            document.getElementById('currentPassword').value = '';
+            document.getElementById('newPasswordModal').value = '';
+            document.getElementById('confirmNewPasswordModal').value = '';
+        }
+
+        // تفعيل المصادقة الثنائية
+        function enable2FA() {
+            showModal('twoFAModal');
+        }
+
+        // التحقق من رمز المصادقة الثنائية
+        function verify2FACode() {
+            const code = document.getElementById('twoFACodeInput').value;
+            
+            if (!code || code.length !== 6) {
+                return showNotification('الرجاء إدخال رمز التحقق المكون من 6 أرقام', 'error');
+            }
+            
+            // هنا يجب التحقق من صحة الرمز مع الخادم
+            // هذا مثال فقط للتوضيح
+            showNotification('تم تفعيل المصادقة الثنائية بنجاح', 'success');
+            hideModal('twoFAModal');
+        }
+
+        // عرض نموذج الاتصال
+        function showContactForm() {
+            showModal('contactModal');
+        }
+
+        // إرسال رسالة الاتصال
+        function sendContactMessage() {
+            const subject = document.getElementById('contactSubject').value;
+            const message = document.getElementById('contactMessage').value;
+            
+            if (!message) {
+                return showNotification('الرجاء إدخال رسالتك', 'error');
+            }
+            
+            // هنا يجب إرسال الرسالة للخادم
+            // هذا مثال فقط للتوضيح
+            showNotification('تم إرسال رسالتك بنجاح، سنرد عليك قريباً', 'success');
+            hideModal('contactModal');
+            
+            // مسح الحقول
+            document.getElementById('contactMessage').value = '';
+        }
+
+        // عرض نموذج تعديل الملف الشخصي
+        function showEditProfile() {
+            document.getElementById('editName').value = currentUser.name;
+            document.getElementById('editPhone').value = currentUser.phone.substring(2); // إزالة 20
+            document.getElementById('editEmail').value = currentUser.email || '';
+            showModal('editProfileModal');
+        }
+
+        // حفظ التعديلات على الملف الشخصي
+        function saveProfile() {
+            const name = document.getElementById('editName').value;
+            const email = document.getElementById('editEmail').value;
+            
+            if (!name) {
+                return showNotification('الرجاء إدخال الاسم', 'error');
+            }
+            
+            currentUser.name = name;
+            currentUser.email = email;
+            saveUserData();
+            
+            // تحديث الواجهة
+            document.getElementById('profileName').textContent = name;
+            if (email) {
+                // يمكنك تحديث عرض البريد الإلكتروني إذا أضفت عنصراً له
+            }
+            
+            showNotification('تم تحديث الملف الشخصي بنجاح', 'success');
+            hideModal('editProfileModal');
+        }
+
+        // عرض الإشعارات
+        function showNotifications() {
+            const container = document.getElementById('notificationsList');
+            container.innerHTML = '';
+            
+            if (!notifications.length) {
+                container.innerHTML = '<p style="text-align: center; padding: 20px;">لا توجد إشعارات</p>';
+            } else {
+                notifications.forEach(notif => {
+                    const notifElement = document.createElement('div');
+                    notifElement.className = `notification-item ${notif.read ? '' : 'unread'}`;
+                    notifElement.innerHTML = `
+                        <h4>${notif.title}</h4>
+                        <p>${notif.message}</p>
+                        <div class="notification-time">${new Date(notif.date).toLocaleString()}</div>
+                    `;
+                    
+                    notifElement.addEventListener('click', () => {
+                        notif.read = true;
+                        updateNotificationBadge();
+                        saveUserData();
+                    });
+                    
+                    container.appendChild(notifElement);
+                });
+            }
+            
+            // تحديث العداد
+            updateNotificationBadge();
+            showModal('notificationsModal');
+        }
+
+        // مسح جميع الإشعارات
+        function clearNotifications() {
+            if (!currentUser) return;
+            
+            currentUser.notifications = [];
+            notifications = [];
+            updateNotificationBadge();
+            saveUserData();
+            
+            document.getElementById('notificationsList').innerHTML = '<p style="text-align: center; padding: 20px;">لا توجد إشعارات</p>';
+        }
+
+        // تحديث بادج الإشعارات
+        function updateNotificationBadge() {
+            if (!currentUser) return;
+            
+            const unreadCount = notifications.filter(n => !n.read).length;
+            const badge = document.getElementById('notificationBadge');
+            
+            if (unreadCount > 0) {
+                badge.textContent = unreadCount;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        // تحديث إحصائيات الفريق
+        function updateTeamStats() {
+            if (!currentUser) return;
+            
+            const totalMembers = currentUser.team.length;
+            const activeMembers = currentUser.team.filter(m => {
+                const joinDate = new Date(m.joinDate);
+                const daysSinceJoin = (new Date() - joinDate) / (1000 * 60 * 60 * 24);
+                return daysSinceJoin < 30; // نشط إذا انضم خلال آخر 30 يوم
+            }).length;
+            
+            // حساب الأرباح من الفريق (هذا مثال فقط)
+            const totalEarnings = currentUser.team.length * 50; // 50 جنيه لكل عضو
+            
+            document.getElementById('totalMembers').textContent = totalMembers;
+            document.getElementById('activeMembers').textContent = activeMembers;
+            document.getElementById('totalEarnings').textContent = totalEarnings + ' EGP';
+            
+            // تحديث بادج الفريق
+            const teamBadge = document.getElementById('teamBadge');
+            if (totalMembers > 0) {
+                teamBadge.textContent = totalMembers;
+                teamBadge.classList.remove('hidden');
+            } else {
+                teamBadge.classList.add('hidden');
+            }
+        }
+
+        // تغيير تبويب المنتجات
+        function changeProductTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.getElementById(tabId + 'Products').classList.add('active');
+            
+            // تحديث التبويبات النشطة
+            document.querySelectorAll('.tabs .tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            event.target.classList.add('active');
+        }
+
+        // تغيير تبويب الفريق
+        function changeTeamTab(level) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.getElementById(level + 'Members').classList.add('active');
+            
+            // تحديث التبويبات النشطة
+            document.querySelectorAll('.tabs .tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            event.target.classList.add('active');
+        }
+
+        // معالجة الإيداع
+        function processDeposit() {
+            const amount = parseFloat(document.getElementById('depositAmount').value);
+            const method = document.getElementById('depositMethod').value;
+            const phone = document.getElementById('depositPhone').value;
+            
+            if (!amount || amount < 10) {
+                return showNotification('الحد الأدنى للإيداع هو 10 جنيه', 'error');
+            }
+            
+            if (!phone || phone.length !== 11) {
+                return showNotification('رقم الهاتف يجب أن يكون 11 رقماً', 'error');
+            }
+            
+            // هنا يجب إرسال طلب الإيداع للخادم
+            // هذا مثال فقط للتوضيح
+            addBalance(amount, `إيداع عبر ${getMethodName(method)}`);
+            
+            // مسح الحقول
+            document.getElementById('depositAmount').value = '';
+            document.getElementById('depositPhone').value = '';
+            
+            showNotification('تم استلام طلب الإيداع بنجاح، سيتم التحقق منه قريباً', 'success');
+        }
+
+        // معالجة السحب
+        function processWithdrawal() {
+            const amount = parseFloat(document.getElementById('withdrawAmount').value);
+            const method = document.getElementById('withdrawMethod').value;
+            const phone = document.getElementById('withdrawPhone').value;
+            
+            if (!amount || amount < 50) {
+                return showNotification('الحد الأدنى للسحب هو 50 جنيه', 'error');
+            }
+            
+            if (!phone || phone.length !== 11) {
+                return showNotification('رقم الهاتف يجب أن يكون 11 رقماً', 'error');
+            }
+            
+            if (subtractBalance(amount, `سحب عبر ${getMethodName(method)}`)) {
+                // مسح الحقول
+                document.getElementById('withdrawAmount').value = '';
+                document.getElementById('withdrawPhone').value = '';
+                
+                showNotification('تم استلام طلب السحب بنجاح، سيتم معالجته خلال 24 ساعة', 'success');
+            }
+        }
+
+        // معالجة التحويل
+        function processTransfer() {
+            const amount = parseFloat(document.getElementById('transferAmount').value);
+            const phone = '20' + document.getElementById('transferPhone').value;
+            
+            if (!amount || amount < 10) {
+                return showNotification('الحد الأدنى للتحويل هو 10 جنيه', 'error');
+            }
+            
+            if (!phone || phone.length !== 12) {
+                return showNotification('رقم الهاتف يجب أن يكون 10 أرقام', 'error');
+            }
+            
+            // التحقق من وجود المستلم
+            const receiver = users.find(u => u.phone === phone);
+            if (!receiver) {
+                return showNotification('لم يتم العثور على المستلم', 'error');
+            }
+            
+            if (subtractBalance(amount, `تحويل إلى ${receiver.name}`)) {
+                // إضافة الرصيد للمستلم
+                receiver.balance += amount;
+                receiver.transactions.unshift({
+                    id: Date.now(),
+                    type: 'deposit',
+                    amount: amount,
+                    date: new Date().toISOString(),
+                    description: `تحويل من ${currentUser.name}`
+                });
+                
+                // إرسال إشعار للمستلم
+                receiver.notifications.unshift({
+                    id: Date.now(),
+                    title: 'تحويل مالي',
+                    message: `لقد استلمت ${amount} جنيه من ${currentUser.name}`,
+                    date: new Date().toISOString(),
+                    read: false
+                });
+                
+                saveUserData(receiver);
+                
+                // مسح الحقول
+                document.getElementById('transferAmount').value = '';
+                document.getElementById('transferPhone').value = '';
+                
+                showNotification(`تم تحويل ${amount} جنيه إلى ${receiver.name} بنجاح`, 'success');
+            }
+        }
+
+        // الحصول على اسم طريقة الدفع
+        function getMethodName(method) {
+            const methods = {
+                vodafone: 'فودافون كاش',
+                etisalat: 'اتصالات كاش',
+                orange: 'اورنج كاش',
+                we: 'وي كاش'
+            };
+            
+            return methods[method] || method;
+        }
+
+        // تصدير سجل المعاملات
+        function exportTransactions() {
+            if (!transactions.length) {
+                return showNotification('لا توجد معاملات لتصديرها', 'error');
+            }
+            
+            let csv = 'التاريخ,النوع,المبلغ,الوصف\n';
+            
+            transactions.forEach(trans => {
+                csv += `${new Date(trans.date).toLocaleDateString()},${trans.type === 'deposit' ? 'إيداع' : 'سحب'},${trans.amount},${trans.description}\n`;
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `معاملات_${currentUser.name}_${new Date().toLocaleDateString()}.csv`;
+            link.click();
+            
+            showNotification('تم تصدير سجل المعاملات بنجاح', 'success');
+        }
+
+        // تهيئة الرسوم البيانية
+        function initCharts() {
+            // رسم بياني لإحصائيات الفريق
+            const teamCtx = document.getElementById('teamStatsChart').getContext('2d');
+            new Chart(teamCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['المستوى الأول', 'المستوى الثاني', 'المستوى الثالث'],
+                    datasets: [{
+                        data: [12, 5, 3],
+                        backgroundColor: [
+                            '#FFD700',
+                            '#C0C0C0',
+                            '#CD7F32'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        // تحميل بيانات نموذجية للاختبار
+        function loadSampleData() {
+            if (users.length === 0) {
+                // إنشاء مستخدم مدير للاختبار
+                users.push({
+                    id: 1,
+                    name: 'مدير النظام',
+                    phone: '201234567890',
+                    password: 'admin123',
+                    balance: 10000,
+                    referralCode: 'ADMIN12',
+                    joinDate: new Date().toLocaleDateString(),
+                    products: [],
+                    transactions: [],
+                    notifications: [],
+                    team: [],
+                    isAdmin: true
+                });
+                
+                localStorage.setItem('nioUsers', JSON.stringify(users));
+            }
+        }
+
+        // ربط الأحداث
+        function bindEvents() {
+            // تحديث الأرباح تلقائياً كل دقيقة
+            setInterval(updateDailyProfits, 60000);
+            
+            // تحديث الأرباح عند تحميل الصفحة
+            updateDailyProfits();
+        }
+
+        // تحديث الأرباح اليومية
+        function updateDailyProfits() {
+            if (!purchasedProducts.length) return;
+            
+            const today = new Date().toDateString();
+            const lastUpdate = currentUser.lastProfitUpdate ? new Date(currentUser.lastProfitUpdate).toDateString() : null;
+            
+            if (lastUpdate !== today) {
+                let totalProfit = 0;
+                
+                purchasedProducts.forEach(product => {
+                    totalProfit += product.dailyProfit;
+                    product.collectedProfit += product.dailyProfit;
+                });
+                
+                if (totalProfit > 0) {
+                    addBalance(totalProfit, 'أرباح يومية من المنتجات');
+                    currentUser.lastProfitUpdate = new Date().toISOString();
+                    saveUserData();
+                    
+                    // تحديث واجهة المستخدم
+                    updatePurchasedProducts();
+                }
+            }
+        }
+
+        // إظهار إشعار الترحيب
+        function showWelcomeNotification() {
+            showNotification(`
+                <div style="text-align: center;">
+                    <h4 style="margin-bottom: 10px; color: var(--accent);">مرحباً بك في NIO VIP!</h4>
+                    <p style="margin-bottom: 10px;">انضم إلى مجموعتنا على التليجرام للحصول على الدعم وأحدث العروض</p>
+                    <a href="https://t.me/+_OMKzsm346YxMDQ0" target="_blank" style="color: var(--accent); font-weight: bold;">اضغط هنا للانضمام</a>
+                </div>
+            `, 'info');
+        }
+
+        // تهيئة التطبيق عند تحميل الصفحة
+        function init() {
+            checkLoginStatus();
+            bindEvents();
+        }
+
+        // بدء التشغيل عند اكتمال تحميل DOM
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
